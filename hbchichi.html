@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Bon anniversaire Chichi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root {
+    --text-dark: #2c1a0e;
+    --text-mid: #5a3e28;
+    --accent: #c1440e;
+    --paper: #faf3e0;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  body {
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Lora', serif;
+    touch-action: none;
+  }
+
+  #sky {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #aecfe0 0%, #c8ddb5 45%, #ddd09a 75%, #c8b87a 100%);
+  }
+
+  #sun {
+    position: absolute;
+    top: 38px;
+    right: 90px;
+    width: 56px;
+    height: 56px;
+    background: radial-gradient(circle, #ffe066 30%, #ffc93c 70%, transparent 100%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+    opacity: 0.85;
+  }
+
+  .cloud {
+    position: absolute;
+    background: rgba(255,255,255,0.55);
+    border-radius: 50px;
+    filter: blur(8px);
+    pointer-events: none;
+  }
+
+  #ground-far {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 110px;
+    background: #7a9e52;
+    border-radius: 60% 40% 0 0 / 28px 20px 0 0;
+    z-index: 3;
+  }
+
+  #ground-near {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: #5a7a38;
+    z-index: 4;
+  }
+
+  #ground-near::before {
+    content: '';
+    position: absolute;
+    top: -18px; left: 0; right: 0;
+    height: 24px;
+    background: repeating-linear-gradient(to right, transparent 0px, transparent 6px, #4a6e2e 6px, #4a6e2e 8px, transparent 8px, transparent 18px);
+    clip-path: polygon(0% 100%, 1% 0%, 2% 100%, 3% 10%, 4% 100%, 5% 5%, 6% 100%, 7% 100%, 8% 0%, 9% 100%, 10% 15%, 11% 100%, 12% 3%, 13% 100%, 14% 100%, 15% 8%, 16% 100%, 17% 2%, 18% 100%, 19% 12%, 20% 100%, 21% 100%, 22% 6%, 23% 100%, 24% 1%, 25% 100%, 26% 9%, 27% 100%, 28% 100%, 29% 4%, 30% 100%, 31% 14%, 32% 100%, 33% 2%, 34% 100%, 35% 100%, 36% 7%, 37% 100%, 38% 0%, 39% 100%, 40% 11%, 41% 100%, 42% 100%, 43% 5%, 44% 100%, 45% 3%, 46% 100%, 47% 8%, 48% 100%, 49% 100%, 50% 1%, 51% 100%, 52% 13%, 53% 100%, 54% 6%, 55% 100%, 56% 100%, 57% 2%, 58% 100%, 59% 10%, 60% 100%, 61% 4%, 62% 100%, 63% 100%, 64% 7%, 65% 100%, 66% 0%, 67% 100%, 68% 15%, 69% 100%, 70% 100%, 71% 3%, 72% 100%, 73% 9%, 74% 100%, 75% 5%, 76% 100%, 77% 100%, 78% 12%, 79% 100%, 80% 2%, 81% 100%, 82% 7%, 83% 100%, 84% 100%, 85% 0%, 86% 100%, 87% 14%, 88% 100%, 89% 4%, 90% 100%, 91% 100%, 92% 8%, 93% 100%, 94% 1%, 95% 100%, 96% 6%, 97% 100%, 98% 100%, 99% 3%, 100% 100%);
+  }
+
+  .tree-group { position: absolute; bottom: 55px; z-index: 3; pointer-events: none; }
+  .tree-trunk-el { width: 10px; height: 35px; background: #5a3a1a; margin: 0 auto; border-radius: 2px; }
+  .tree-canopy { width: 52px; height: 62px; background: radial-gradient(ellipse at 40% 40%, #4a7a28 0%, #2e5a14 70%); border-radius: 50% 48% 50% 48%; margin: 0 auto; margin-bottom: -4px; }
+  .tree-canopy.small { width: 38px; height: 46px; }
+
+  #score-panel {
+    position: absolute;
+    top: 24px; left: 28px;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  #score-panel .label {
+    font-family: 'Caveat', cursive;
+    font-size: 17px;
+    color: var(--text-mid);
+    letter-spacing: 1px;
+    opacity: 0.85;
+  }
+
+  #score-num {
+    font-family: 'Caveat', cursive;
+    font-size: 72px;
+    font-weight: 700;
+    color: var(--text-dark);
+    line-height: 1;
+    letter-spacing: -2px;
+  }
+
+  #combo {
+    position: absolute;
+    top: 38%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Caveat', cursive;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 200;
+    white-space: nowrap;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    transition: opacity 0.25s;
+  }
+
+  .bird {
+    position: absolute;
+    cursor: crosshair;
+    touch-action: none;
+    z-index: 10;
+    will-change: left, top;
+  }
+
+  .bird img {
+    display: block;
+    object-fit: contain;
+    pointer-events: none;
+    transition: transform 0.08s;
+  }
+
+  .bird:active img { transform: scale(0.88); }
+
+  .catch-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid var(--accent);
+    pointer-events: none;
+    z-index: 150;
+    animation: ring-out 0.5s ease-out forwards;
+  }
+
+  @keyframes ring-out {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(2.1); opacity: 0; }
+  }
+
+  .feather-p {
+    position: absolute;
+    pointer-events: none;
+    z-index: 140;
+    width: 15px; height: 5px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: feather-out 1.2s ease-out forwards;
+  }
+
+  @keyframes feather-out {
+    0% { opacity: 0.9; transform: translate(0,0) rotate(0deg); }
+    100% { opacity: 0; transform: translate(var(--fx), var(--fy)) rotate(var(--fr)); }
+  }
+
+  .score-pop {
+    position: absolute;
+    font-family: 'Caveat', cursive;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--accent);
+    pointer-events: none;
+    z-index: 200;
+    animation: score-pop 0.8s ease-out forwards;
+  }
+
+  @keyframes score-pop {
+    0% { opacity: 1; transform: translateY(0) scale(1.1); }
+    100% { opacity: 0; transform: translateY(-55px) scale(0.8); }
+  }
+
+  .paw-hit {
+    position: absolute;
+    pointer-events: none;
+    z-index: 180;
+    color: rgba(255,255,255,0.9);
+    font-size: 34px;
+    animation: paw-out 0.65s ease-out forwards;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18));
+  }
+
+  @keyframes paw-out {
+    0% { opacity: 1; transform: scale(1.4); }
+    100% { opacity: 0; transform: scale(0.7) rotate(18deg); }
+  }
+
+  #intro {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: rgba(160, 200, 140, 0.50);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    z-index: 500;
+  }
+
+  .intro-card {
+    background: var(--paper);
+    border-radius: 20px;
+    padding: 46px 54px 42px;
+    text-align: center;
+    max-width: 420px;
+    width: 86%;
+    box-shadow: 0 10px 48px rgba(60,40,10,0.16), 0 2px 8px rgba(60,40,10,0.06);
+    border: 1px solid rgba(180,150,80,0.22);
+  }
+
+  .intro-icon {
+    font-size: 52px;
+    color: var(--text-dark);
+    margin-bottom: 18px;
+    display: block;
+  }
+
+  .intro-card h1 {
+    font-family: 'Caveat', cursive;
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+
+  .intro-card p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    color: var(--text-mid);
+    font-size: 17px;
+    line-height: 1.7;
+    margin-bottom: 28px;
+  }
+
+  .intro-signature {
+    font-family: 'Caveat', cursive;
+    font-size: 15px;
+    color: var(--text-mid);
+    opacity: 0.6;
+    margin-bottom: 30px;
+    letter-spacing: 0.3px;
+  }
+
+  .intro-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 13px;
+  }
+
+  #start-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    background: var(--text-dark);
+    color: var(--paper);
+    border: none;
+    border-radius: 50px;
+    padding: 16px 44px;
+    font-family: 'Caveat', cursive;
+    font-size: 24px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 20px rgba(44,26,14,0.20);
+    transition: background 0.16s, transform 0.1s;
+    width: 100%;
+    justify-content: center;
+  }
+
+  #start-btn:hover { background: #4a2e18; }
+  #start-btn:active { transform: scale(0.95); }
+
+  #test-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: transparent;
+    color: var(--text-mid);
+    border: 1.5px solid rgba(90,62,40,0.32);
+    border-radius: 50px;
+    padding: 12px 28px;
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: background 0.14s, border-color 0.14s, transform 0.1s;
+    width: 100%;
+    justify-content: center;
+  }
+
+  #test-btn:hover { background: rgba(90,62,40,0.07); border-color: rgba(90,62,40,0.55); }
+  #test-btn:active { transform: scale(0.96); }
+
+  #video-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,14,8,0.84);
+    z-index: 900;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  #video-overlay.open {
+    display: flex;
+  }
+
+  #video-box {
+    position: relative;
+    width: min(1080px, 95vw);
+    aspect-ratio: 16/9;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  #video-box iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  #video-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: rgba(250,243,224,0.1);
+    color: rgba(250,243,224,0.82);
+    border: 1px solid rgba(250,243,224,0.22);
+    border-radius: 50px;
+    padding: 11px 28px;
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    cursor: pointer;
+    transition: background 0.14s, transform 0.1s;
+    touch-action: manipulation;
+  }
+
+  #video-close:hover { background: rgba(250,243,224,0.18); }
+  #video-close:active { transform: scale(0.96); }
+</style>
+</head>
+<body>
+<div id="sky">
+  <div id="sun"></div>
+
+  <div class="cloud" style="width:160px;height:44px;top:70px;left:12%;opacity:0.7;"></div>
+  <div class="cloud" style="width:90px;height:28px;top:56px;left:19%;opacity:0.5;"></div>
+  <div class="cloud" style="width:200px;height:50px;top:108px;right:8%;opacity:0.65;"></div>
+  <div class="cloud" style="width:110px;height:30px;top:94px;right:17%;opacity:0.45;"></div>
+  <div class="cloud" style="width:130px;height:36px;top:178px;left:38%;opacity:0.38;"></div>
+
+  <div class="tree-group" style="left:3%"><div class="tree-canopy"></div><div class="tree-trunk-el"></div></div>
+  <div class="tree-group" style="left:9%;bottom:62px"><div class="tree-canopy small"></div><div class="tree-trunk-el" style="height:24px"></div></div>
+  <div class="tree-group" style="left:22%"><div class="tree-canopy"></div><div class="tree-trunk-el"></div></div>
+  <div class="tree-group" style="right:4%"><div class="tree-canopy"></div><div class="tree-trunk-el"></div></div>
+  <div class="tree-group" style="right:14%"><div class="tree-canopy small"></div><div class="tree-trunk-el" style="height:22px"></div></div>
+  <div class="tree-group" style="right:28%"><div class="tree-canopy"></div><div class="tree-trunk-el"></div></div>
+
+  <div id="ground-far"></div>
+  <div id="ground-near"></div>
+
+  <div id="score-panel">
+    <div class="label">attrapes</div>
+    <div id="score-num">0</div>
+  </div>
+
+  <div id="combo"></div>
+
+  <div id="intro">
+    <div class="intro-card">
+      <i class="fa-solid fa-cat intro-icon"></i>
+      <h1>Bon anniversaire Chichi !</h1>
+      <p>Chichi doit profiter de son anniversaire,<br>laisse le jouer un coup :)</p>
+      <div class="intro-signature">Cadeau de Murat pour Chichi</div>
+      <div class="intro-buttons">
+        <button id="start-btn" onclick="startGame()">
+          <i class="fa-solid fa-paw"></i> Jouer
+        </button>
+        <button id="test-btn" onclick="openVideo()">
+          <i class="fa-solid fa-video"></i> Teste si Chichi est réceptif
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="video-overlay">
+    <div id="video-box">
+      <iframe id="yt-iframe" src="" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+    </div>
+    <button id="video-close" onclick="closeVideo()">
+      <i class="fa-solid fa-xmark"></i> Fermer
+    </button>
+  </div>
+</div>
+
+<script>
+const W = () => window.innerWidth;
+const H = () => window.innerHeight;
+const sky = document.getElementById('sky');
+const scoreEl = document.getElementById('score-num');
+const comboEl = document.getElementById('combo');
+
+let score = 0, combo = 0, comboTimer = null;
+let birds = [], running = false;
+let bgMusic = null; // Ajout de la variable pour l'audio
+
+const totalBirdImages = 10;
+
+function randImg() {
+  const n = Math.floor(Math.random() * totalBirdImages) + 1;
+  return 'oiseau' + n + '.png';
+}
+
+const featherColors = ['#c8a85a', '#8fad6e', '#e07040', '#6a9abf', '#d4706a', '#a0784a'];
+
+function openVideo() {
+  const overlay = document.getElementById('video-overlay');
+  const iframe = document.getElementById('yt-iframe');
+  iframe.src = 'https://www.youtube.com/embed/4joV8bgLSDo?autoplay=1&rel=0';
+  overlay.classList.add('open');
+}
+
+function closeVideo() {
+  const overlay = document.getElementById('video-overlay');
+  const iframe = document.getElementById('yt-iframe');
+  iframe.src = '';
+  overlay.classList.remove('open');
+}
+
+class Bird {
+  constructor() {
+    this.el = document.createElement('div');
+    this.el.className = 'bird';
+    this.imgEl = document.createElement('img');
+    this.imgEl.alt = 'oiseau';
+    this.imgEl.draggable = false;
+    this.el.appendChild(this.imgEl);
+    this.refresh();
+    this.reset(true);
+    sky.appendChild(this.el);
+    this.el.addEventListener('pointerdown', e => { e.preventDefault(); this.catch(); });
+  }
+
+  refresh() {
+    this.size = 360 + Math.random() * 165;
+    this.imgEl.style.width = this.size + 'px';
+    this.imgEl.style.height = this.size + 'px';
+    this.imgEl.src = randImg();
+  }
+
+  reset(init, delay = 0) {
+    if (delay > 0) {
+      this.x = -9999;
+      this.el.style.left = '-9999px';
+      setTimeout(() => {
+        if (running) {
+          this.refresh();
+          this.reset(false, 0);
+        }
+      }, delay);
+      return;
+    }
+
+    const fromLeft = Math.random() < 0.5;
+    
+    // Vitesse de base augmentée de +150% par rapport à l'original (1.6 -> 4.0)
+    const baseSpeed = 4.0 + Math.random() * 4.5; 
+
+    if (init) {
+      this.x = 80 + Math.random() * (W() - 280);
+      this.vx = baseSpeed * (Math.random() < 0.5 ? 1 : -1);
+    } else {
+      this.x = fromLeft ? -(this.size + 20) : W() + 20;
+      this.vx = baseSpeed * (fromLeft ? 1 : -1);
+    }
+    
+    this.y = 55 + Math.random() * (H() - 270);
+    this.wobble = Math.random() * Math.PI * 2;
+    this.wobbleSpeed = 0.013 + Math.random() * 0.01;
+    this.wobbleAmp = 0.4 + Math.random() * 0.6;
+    
+    // Compteur de frames pour la variation de vitesse toutes les secondes
+    this.ticks = 0; 
+  }
+
+  update() {
+    if (this.x === -9999) return;
+
+    // Variation de vitesse toutes les secondes (environ 60 images)
+    this.ticks++;
+    if (this.ticks >= 60) {
+      this.ticks = 0;
+      // Variation de +10% (1.10) ou -15% (0.85)
+      const variation = Math.random() < 0.5 ? 1.10 : 0.85;
+      this.vx *= variation;
+    }
+
+    this.wobble += this.wobbleSpeed;
+    this.x += this.vx;
+    this.y += Math.sin(this.wobble) * this.wobbleAmp;
+
+    if (this.y < 48) this.y = 48;
+    if (this.y > H() - 185) this.y = H() - 185;
+
+    // Si l'oiseau sort de l'écran, on le réinitialise
+    if (this.x < -(this.size + 60) || this.x > W() + 60) {
+      this.reset(false, 1000 + Math.random() * 1800);
+    }
+
+    this.el.style.left = this.x + 'px';
+    this.el.style.top = this.y + 'px';
+  }
+
+  catch() {
+    if (!running || this.x === -9999) return;
+
+    const rect = this.el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const r = this.size / 2;
+
+    const ring = document.createElement('div');
+    ring.className = 'catch-ring';
+    ring.style.cssText = `left:${cx - r}px;top:${cy - r}px;width:${r * 2}px;height:${r * 2}px`;
+    sky.appendChild(ring);
+    setTimeout(() => ring.remove(), 520);
+
+    const paw = document.createElement('i');
+    paw.className = 'fa-solid fa-paw paw-hit';
+    paw.style.left = (cx - 20) + 'px';
+    paw.style.top = (cy - 20) + 'px';
+    sky.appendChild(paw);
+    setTimeout(() => paw.remove(), 650);
+
+    for (let i = 0; i < 8; i++) {
+      const f = document.createElement('div');
+      f.className = 'feather-p';
+      const angle = (i / 8) * Math.PI * 2 + Math.random() * 0.4;
+      const dist = 50 + Math.random() * 60;
+      const col = featherColors[Math.floor(Math.random() * featherColors.length)];
+      f.style.cssText = `left:${cx}px;top:${cy}px;background:${col};--fx:${Math.cos(angle) * dist}px;--fy:${Math.sin(angle) * dist + 20}px;--fr:${Math.random() * 360}deg`;
+      sky.appendChild(f);
+      setTimeout(() => f.remove(), 1200);
+    }
+
+    const pop = document.createElement('div');
+    pop.className = 'score-pop';
+    pop.textContent = '+1';
+    pop.style.left = (cx - 18) + 'px';
+    pop.style.top = (cy - 44) + 'px';
+    sky.appendChild(pop);
+    setTimeout(() => pop.remove(), 800);
+
+    score++;
+    combo++;
+    scoreEl.textContent = score;
+
+    clearTimeout(comboTimer);
+    if (combo > 1) {
+      comboEl.style.opacity = '1';
+      comboEl.textContent = combo + ' en serie !';
+      comboTimer = setTimeout(() => { combo = 0; comboEl.style.opacity = '0'; }, 1600);
+    } else {
+      comboTimer = setTimeout(() => { combo = 0; }, 1600);
+    }
+
+    this.reset(false, 1200 + Math.random() * 2000);
+  }
+
+  remove() { this.el.remove(); }
+}
+
+function loop() {
+  birds.forEach(b => b.update());
+  if (birds.length < 2) birds.push(new Bird());
+  requestAnimationFrame(loop);
+}
+
+function startGame() {
+  document.getElementById('intro').style.display = 'none';
+  
+  // Démarrage du son d'ambiance 
+  if (!bgMusic) {
+    bgMusic = new Audio('birds.mp3');
+    bgMusic.loop = true;
+  }
+  bgMusic.play();
+
+  running = true;
+  birds.push(new Bird());
+  setTimeout(() => { if (running) birds.push(new Bird()); }, 2200);
+  loop();
+}
+</script>
+</body>
+</html>
